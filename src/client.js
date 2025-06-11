@@ -49,12 +49,14 @@ chrome.runtime.onMessage.addListener((data, sender, sendResponse) => {
 			images.push(...parsePictureNode(e));
 		}
 		images.push(...parseSrcSet(e));
-		const style = window.getComputedStyle(e, false);
-		if (typeof style !== "undefined") {
-			const bg = style["background-image"] || "";
-			const image = bg.match(/url\(["']?([^"']*)["']?\)/);
-			if (image) {
-				images.push(image[1]);
+		for (const pseudoElement of ["::before", "::after", false]) {
+			const style = window.getComputedStyle(e, pseudoElement);
+			if (typeof style !== "undefined") {
+				const bg = style["background-image"] || "";
+				const image = bg.match(/url\(["']?([^"']*)["']?\)/);
+				if (image) {
+					images.push(image[1]);
+				}
 			}
 		}
 	});
