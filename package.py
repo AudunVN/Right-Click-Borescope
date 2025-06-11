@@ -7,7 +7,7 @@ def make_package(filename, manifest_version):
 	with ZipFile(filename, 'w') as myzip:
 		files = glob("./src/**", recursive=True)
 		for file in files:
-			arcname = file.replace("./src/", "", 1)
+			arcname = re.sub(r".[/|\\]src[/|\\]", "", file)
 			if (arcname == "" or arcname == "manifest.json"):
 				continue
 
