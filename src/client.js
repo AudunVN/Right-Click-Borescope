@@ -199,19 +199,44 @@ chrome.runtime.onMessage.addListener((data, sender, sendResponse) => {
 	borescope_modal.appendChild(borescope_modal_list);
 
 	for (const image of images) {
-		let imageEl = document.createElement("a");
+		const imageEl = document.createElement("a");
 		imageEl.href = image;
 		imageEl.target = "_blank"
 		imageEl.classList.add("BLACKLE__borescope_modal_list_item");
 		borescope_modal_list.appendChild(imageEl);
 
-		let imageEL_img = document.createElement("img");
+		const imageEL_img = document.createElement("img");
 		imageEL_img.src = image;
 		imageEl.appendChild(imageEL_img);
 
-		let imageEl_span = document.createElement("span");
-		imageEl_span.classList.add("BLACKLE__borescope_modal_list_text");
-		imageEl_span.innerText = image;
-		imageEl.appendChild(imageEl_span);
+		const imageEl_urlSpan = document.createElement("span");
+		imageEl_urlSpan.classList.add("BLACKLE__borescope_modal_list_text");
+		imageEl_urlSpan.innerText = image;
+		imageEl.appendChild(imageEl_urlSpan);
+
+		if (imageEL_img.naturalHeight !== 0 && imageEL_img.naturalWidth !== 0) {
+			const imageEl_dimensionsSpan = document.createElement("span");
+			imageEl_dimensionsSpan.classList.add("BLACKLE__borescope_modal_list_text");
+			imageEl_dimensionsSpan.innerText = `${imageEL_img.naturalHeight} x ${imageEL_img.naturalWidth}`;
+			imageEl.appendChild(imageEl_dimensionsSpan);
+		}
+
+		const metadata = performance.getEntriesByName(image)[0];
+
+		if (typeof metadata !== "undefined") {
+			if (metadata.decodedBodySize !== 0) {
+				const imageEl_sizeSpan = document.createElement("span");
+				imageEl_sizeSpan.classList.add("BLACKLE__borescope_modal_list_text");
+				imageEl_sizeSpan.innerText = `${metadata.decodedBodySize} bytes`;
+				imageEl.appendChild(imageEl_sizeSpan);
+			}
+
+			if (metadata.contentType !== "") {
+				const imageEl_typeSpan = document.createElement("span");
+				imageEl_typeSpan.classList.add("BLACKLE__borescope_modal_list_text");
+				imageEl_typeSpan.innerText = metadata.contentType;
+				imageEl.appendChild(imageEl_typeSpan);
+			}
+		}
 	}
 });
